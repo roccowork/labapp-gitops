@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: labapp
+spec:
+  replicas: 3
+  revisionHistoryLimit: 5
+  strategy:
+    rollingUpdate:
+      maxSurge: 1          # 更新时最多多出 1 个 Pod
+      maxUnavailable: 0    # 不允许减少可用的 Pod：新的就绪了才删旧的
+  selector:
+    matchLabels: { app: labapp }
+  template:
+    metadata:
+      labels: { app: labapp }
+    spec:
+      containers:
+        - name: labapp
+          image: 192.168.56.13:5000/labapp:init     # Jenkins 每次发布都会改这一行的 tag
+          ports:
+            - containerPort: 8000
+          readinessProbe:
+            httpGet: { path: /healthz, port: 8000 }
+            periodSeconds: 5
+          livenessProbe:
+            httpGet: { path: /healthz, port: 8000 }
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          resources:
+            requests: { cpu: 50m, memory: 32Mi }
+            limits:   { cpu: 200m, memory: 64Mi }
