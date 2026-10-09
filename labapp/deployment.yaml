@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: labapp
-          image: 192.168.56.13:5000/labapp:3-66488ee     # Jenkins 每次发布都会改这一行的 tag
+          image: 192.168.56.13:5000/labapp:4-7521b94     # Jenkins 每次发布都会改这一行的 tag
           ports:
             - containerPort: 8000
           readinessProbe:
